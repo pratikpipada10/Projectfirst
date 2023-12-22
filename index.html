@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Display</title>
+</head>
+<body>
+
+  <h1>Product Display</h1>
+
+  <div id="productList"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Use a CORS proxy to fetch data
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      const apiUrl = 'https://s3.amazonaws.com/open-to-cors/assignment.json';
+
+      // Fetch JSON data through the proxy
+      fetch(proxyUrl + apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          // Sort data based on descending popularity
+          const sortedData = data.sort((a, b) => b.Popularity - a.Popularity);
+
+          // Display the sorted data
+          displayProducts(sortedData);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+
+      function displayProducts(products) {
+        const productListElement = document.getElementById('productList');
+
+        // Create an unordered list
+        const ul = document.createElement('ul');
+
+        // Loop through each product and create list items
+        products.forEach(product => {
+          const li = document.createElement('li');
+          li.textContent = `${product.Title} - $${product.Price.toFixed(2)}`;
+          ul.appendChild(li);
+        });
+
+        // Append the list to the product list element
+        productListElement.appendChild(ul);
+      }
+    });
+  </script>
+
+</body>
+</html>
